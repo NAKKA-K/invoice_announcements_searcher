@@ -32,7 +32,7 @@ jobs:
           working-directory: batch_workflow
           skip-pkg-cache: true
   batch-test:
-    needs: [lint]
+    needs: [batch-lint]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -58,7 +58,7 @@ jobs:
           working-directory: tools/invoice
           skip-pkg-cache: true
   invoice-test:
-    needs: [lint]
+    needs: [invoice-lint]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
