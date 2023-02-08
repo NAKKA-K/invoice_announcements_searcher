@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"log"
 	"sync"
 
@@ -17,11 +16,7 @@ func LoadJSON(filename string, client *meilisearch.Client, wg *sync.WaitGroup) {
 	if err != nil {
 		return
 	}
-	// documents := structs.Map(announcements)
-	// struct to map
-	var documents []map[string]interface{}
-	b, _ := json.Marshal(announcements)
-	json.Unmarshal(b, &documents)
+	documents := ToSliceMap(announcements)
 
 	err = RunIndexingInvoice(client, documents)
 	if err != nil {

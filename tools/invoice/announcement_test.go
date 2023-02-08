@@ -2,8 +2,9 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestAnnouncement_UnmarshalJSON(t *testing.T) {
@@ -57,4 +58,35 @@ func TestNormalize(t *testing.T) {
 	expected := "株式会社CARTA HOLDINGS, CARTA、カルタ 1!"
 
 	assert.Equal(t, expected, actual, "日本語は全角、英数字記号は半角になる")
+}
+
+func TestToArrayInterface(t *testing.T) {
+	input := []Announcement{
+		{
+			RegistratedNumber: "T6011001033049",
+			OriginName:        "株式会社ＣＡＲＴＡ　ＨＯＬＤＩＮＧＳ",
+			NormalizedName:    "株式会社CARTA HOLDINGS",
+		},
+		{
+			RegistratedNumber: "T6011001033049",
+			OriginName:        "株式会社ＣＡＲＴＡ　ＨＯＬＤＩＮＧＳ",
+			NormalizedName:    "株式会社CARTA HOLDINGS",
+		},
+	}
+
+	actual := ToSliceMap(input)
+
+	expected := []map[string]interface{}{
+		{
+			"registratedNumber": "T6011001033049",
+			"name":              "株式会社ＣＡＲＴＡ　ＨＯＬＤＩＮＧＳ",
+			"normalizedName":    "株式会社CARTA HOLDINGS",
+		},
+		{
+			"registratedNumber": "T6011001033049",
+			"name":              "株式会社ＣＡＲＴＡ　ＨＯＬＤＩＮＧＳ",
+			"normalizedName":    "株式会社CARTA HOLDINGS",
+		},
+	}
+	assert.Equal(t, expected, actual)
 }

@@ -3,8 +3,9 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"golang.org/x/text/width"
 	"os"
+
+	"golang.org/x/text/width"
 )
 
 type Announcement struct {
@@ -40,6 +41,13 @@ func (d *Announcement) UnmarshalJSON(b []byte) error {
 	d.NormalizedName = normalize(aux.OriginName)
 
 	return nil
+}
+
+func ToSliceMap(announcements []Announcement) []map[string]interface{} {
+	var documents []map[string]interface{}
+	b, _ := json.Marshal(announcements)
+	json.Unmarshal(b, &documents)
+	return documents
 }
 
 // 漢字, ひらがな, カナ, ﾊﾝｶｸｶﾅ => full-width
