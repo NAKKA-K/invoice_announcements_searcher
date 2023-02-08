@@ -14,11 +14,15 @@ func GetFileNames(dir string) ([]string, error) {
 	files := make([]string, 0, len(entries))
 	for _, entry := range entries {
 		name := entry.Name()
-		if name == ".gitkeep" {
+		if IsHidden(name) || entry.IsDir() {
 			continue
 		}
 		files = append(files, name)
 	}
 
 	return files, nil
+}
+
+func IsHidden(name string) bool {
+	return name[0] == '.'
 }

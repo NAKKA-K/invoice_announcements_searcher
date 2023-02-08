@@ -6,20 +6,21 @@ import (
 	"log"
 	"time"
 
+	"invoice/internal/duration"
+
 	"github.com/meilisearch/meilisearch-go"
-	"github.com/sosodev/duration"
 )
 
-const IndexingTimeout = time.Second * 60
+const Timeout = time.Second * 120
 const Index = "invoice"
 
-func RunIndexingInvoice(client *meilisearch.Client, documents []map[string]interface{}) error {
+func RunToInvoice(client *meilisearch.Client, documents []map[string]interface{}) error {
 	resp, err := client.Index(Index).AddDocuments(documents, "registratedNumber")
 	if err != nil {
 		return fmt.Errorf("fail to start AddDocuments: %w", err)
 	}
 
-	ctx, cancelFunc := context.WithTimeout(context.Background(), IndexingTimeout)
+	ctx, cancelFunc := context.WithTimeout(context.Background(), Timeout)
 	defer cancelFunc()
 
 	task, err := client.WaitForTask(resp.TaskUID, meilisearch.WaitParams{
@@ -31,20 +32,10 @@ func RunIndexingInvoice(client *meilisearch.Client, documents []map[string]inter
 	}
 
 	// MEMO: 所要時間を出力しているがIndexingTimeoutが適切に決まれば無くしても良い
-	duration, err := parseDurationISO8061(task.Duration)
+	duration, err := duration.ParseDurationISO8061(task.Duration)
 	if err != nil {
 		return err
 	}
-	log.Printf("success AddDocuments: duration %s", duration.String())
+	log.Printf("success AddDocuments: duration %s (%v)", duration.String(), task.Duration)
 	return nil
-}
-
-func parseDurationISO8061(meiliDuration string) (*time.Duration, error) {
-	d, err := duration.Parse(meiliDuration)
-	if err != nil {
-		return nil, err
-	}
-
-	duration := d.ToTimeDuration()
-	return &duration, nil
 }

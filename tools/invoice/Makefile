@@ -33,6 +33,9 @@ clean:
 healthy:
 	@until (curl -sS localhost:7700/health | jq -r '.status' | grep -q "available") do sleep 3; done
 
+test:
+	go test ./...
+
 .PHONY: search _req_query
 
 Q :=
