@@ -74,7 +74,10 @@ func TestToArrayInterface(t *testing.T) {
 		},
 	}
 
-	actual := ToSliceMap(input)
+	actual, err := ToSliceMap(input)
+	if err != nil {
+		t.Error(err)
+	}
 
 	expected := []map[string]interface{}{
 		{
