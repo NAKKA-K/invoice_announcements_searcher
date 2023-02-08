@@ -1,7 +1,7 @@
 package importer
 
 import (
-	"log"
+	"fmt"
 	"sync"
 
 	"invoice/internal/announcement"
@@ -10,19 +10,42 @@ import (
 	"github.com/meilisearch/meilisearch-go"
 )
 
-func LoadJSON(filename string, client *meilisearch.Client, wg *sync.WaitGroup) {
-	defer wg.Done()
+type Request struct {
+	wg       *sync.WaitGroup
+	ch       chan<- ChResp
+	client   *meilisearch.Client
+	fineName string
+}
 
-	announcements, err := announcement.LoadFromJson(filename)
+type ChResp string
+
+func LoadJSON(req *Request) {
+	defer req.wg.Done()
+
+	announcements, err := announcement.LoadFromJson(req.fineName)
 	if err != nil {
+		req.ch <- ChResp(err.Error())
 		return
 	}
-	documents := announcement.ToSliceMap(announcements)
-
-	err = indexing.RunToInvoice(client, documents)
+	documents, err := announcement.ToSliceMap(announcements)
 	if err != nil {
-		log.Fatalf("loaded: %s, err: %v", filename, err)
+		req.ch <- ChResp(err.Error())
+		return
+	}
+
+	dur, err := indexing.RunToInvoice(req.client, documents)
+	if err != nil {
+		req.ch <- ChResp(fmt.Sprintf("loaded: %s, err: %v", req.fineName, err))
 	} else {
-		log.Printf("loaded: %s, status: SUCCESS", filename)
+		req.ch <- ChResp(fmt.Sprintf("loaded: %s, status: SUCCESS, duration %s", req.fineName, dur.String()))
+	}
+}
+
+func NewRequest(wg *sync.WaitGroup, ch chan<- ChResp, client *meilisearch.Client, fileName string) *Request {
+	return &Request{
+		wg:       wg,
+		ch:       ch,
+		client:   client,
+		fineName: fileName,
 	}
 }

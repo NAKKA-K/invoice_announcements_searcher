@@ -3,7 +3,6 @@ package indexing
 import (
 	"context"
 	"fmt"
-	"log"
 	"time"
 
 	"invoice/internal/duration"
@@ -14,10 +13,10 @@ import (
 const Timeout = time.Second * 120
 const Index = "invoice"
 
-func RunToInvoice(client *meilisearch.Client, documents []map[string]interface{}) error {
+func RunToInvoice(client *meilisearch.Client, documents []map[string]interface{}) (*time.Duration, error) {
 	resp, err := client.Index(Index).AddDocuments(documents, "registratedNumber")
 	if err != nil {
-		return fmt.Errorf("fail to start AddDocuments: %w", err)
+		return nil, fmt.Errorf("fail to start AddDocuments: %w", err)
 	}
 
 	ctx, cancelFunc := context.WithTimeout(context.Background(), Timeout)
@@ -28,14 +27,12 @@ func RunToInvoice(client *meilisearch.Client, documents []map[string]interface{}
 		Interval: time.Second * 3,
 	})
 	if err != nil {
-		return fmt.Errorf("fail to waiting AddDocuments: %w", err)
+		return nil, fmt.Errorf("fail to waiting AddDocuments: %w", err)
 	}
 
-	// MEMO: 所要時間を出力しているがIndexingTimeoutが適切に決まれば無くしても良い
-	duration, err := duration.ParseDurationISO8061(task.Duration)
+	dur, err := duration.ParseDurationISO8061(task.Duration)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	log.Printf("success AddDocuments: duration %s (%v)", duration.String(), task.Duration)
-	return nil
+	return dur, nil
 }

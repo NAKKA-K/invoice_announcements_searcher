@@ -43,11 +43,19 @@ func (d *Announcement) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func ToSliceMap(announcements []Announcement) []map[string]interface{} {
+func ToSliceMap(announcements []Announcement) ([]map[string]interface{}, error) {
+	b, err := json.Marshal(announcements)
+	if err != nil {
+		return nil, fmt.Errorf("fail to marshal [announcements to bytes]: %w", err)
+	}
+
 	var documents []map[string]interface{}
-	b, _ := json.Marshal(announcements)
-	json.Unmarshal(b, &documents)
-	return documents
+	err = json.Unmarshal(b, &documents)
+	if err != nil {
+		return nil, fmt.Errorf("fail to unmarshal [announcements bytes to slice map]: %w", err)
+	}
+
+	return documents, nil
 }
 
 // 漢字, ひらがな, カナ, ﾊﾝｶｸｶﾅ => full-width
