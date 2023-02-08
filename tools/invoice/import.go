@@ -2,13 +2,13 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/meilisearch/meilisearch-go"
 	"log"
 	"sync"
+
+	"github.com/meilisearch/meilisearch-go"
 )
 
 const DataDir = "./data"
-const Index = "invoice"
 
 func LoadJSON(filename string, client *meilisearch.Client, wg *sync.WaitGroup) {
 	defer wg.Done()

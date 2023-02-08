@@ -3,13 +3,15 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/meilisearch/meilisearch-go"
-	"github.com/sosodev/duration"
 	"log"
 	"time"
+
+	"github.com/meilisearch/meilisearch-go"
+	"github.com/sosodev/duration"
 )
 
 const IndexingTimeout = time.Second * 60
+const Index = "invoice"
 
 func RunIndexingInvoice(client *meilisearch.Client, documents []map[string]interface{}) error {
 	resp, err := client.Index(Index).AddDocuments(documents, "registratedNumber")
