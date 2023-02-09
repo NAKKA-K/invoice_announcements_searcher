@@ -1,10 +1,11 @@
 package main
 
 import (
-	"invoice/internal/file"
-	"invoice/internal/importer"
 	"log"
 	"sync"
+
+	"invoice/internal/file"
+	"invoice/internal/importer"
 
 	"github.com/meilisearch/meilisearch-go"
 )
@@ -29,7 +30,7 @@ func main() {
 		wg.Add(1)
 
 		req := importer.NewRequest(&wg, ch, client, DataDir+"/"+file)
-		go importer.LoadJSON(req)
+		go importer.Run(req)
 	}
 
 	for i := 0; i < len(files); i++ {

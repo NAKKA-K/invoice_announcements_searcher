@@ -54,13 +54,13 @@ func TestAnnouncement_UnmarshalJSON(t *testing.T) {
 }
 
 func TestNormalize(t *testing.T) {
-	actual := normalize("株式会社ＣＡＲＴＡ　ＨＯＬＤＩＮＧＳ, CARTA、ｶﾙﾀ 1！")
+	actual := Normalize("株式会社ＣＡＲＴＡ　ＨＯＬＤＩＮＧＳ, CARTA、ｶﾙﾀ 1！")
 	expected := "株式会社CARTA HOLDINGS, CARTA、カルタ 1!"
 
 	assert.Equal(t, expected, actual, "日本語は全角、英数字記号は半角になる")
 }
 
-func TestToArrayInterface(t *testing.T) {
+func TestToSliceMap(t *testing.T) {
 	input := []Announcement{
 		{
 			RegistratedNumber: "T6011001033049",

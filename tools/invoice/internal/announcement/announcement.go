@@ -38,7 +38,7 @@ func (d *Announcement) UnmarshalJSON(b []byte) error {
 
 	d.RegistratedNumber = aux.RegistratedNumber
 	d.OriginName = aux.OriginName
-	d.NormalizedName = normalize(aux.OriginName)
+	d.NormalizedName = Normalize(aux.OriginName)
 
 	return nil
 }
@@ -58,8 +58,9 @@ func ToSliceMap(announcements []Announcement) ([]map[string]interface{}, error) 
 	return documents, nil
 }
 
+// Normalize は検索のために半角全角を統一する関数
 // 漢字, ひらがな, カナ, ﾊﾝｶｸｶﾅ => full-width
 // alphabet, number         => half-width
-func normalize(s string) string {
+func Normalize(s string) string {
 	return width.Fold.String(s)
 }

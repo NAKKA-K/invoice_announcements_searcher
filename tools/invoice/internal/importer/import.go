@@ -14,15 +14,15 @@ type Request struct {
 	wg       *sync.WaitGroup
 	ch       chan<- ChResp
 	client   *meilisearch.Client
-	fineName string
+	fileName string
 }
 
 type ChResp string
 
-func LoadJSON(req *Request) {
+func Run(req *Request) {
 	defer req.wg.Done()
 
-	announcements, err := announcement.LoadFromJson(req.fineName)
+	announcements, err := announcement.LoadFromJson(req.fileName)
 	if err != nil {
 		req.ch <- ChResp(err.Error())
 		return
@@ -33,11 +33,11 @@ func LoadJSON(req *Request) {
 		return
 	}
 
-	dur, err := indexing.RunToInvoice(req.client, documents)
+	dur, err := indexing.ToInvoice(req.client, documents)
 	if err != nil {
-		req.ch <- ChResp(fmt.Sprintf("loaded: %s, err: %v", req.fineName, err))
+		req.ch <- ChResp(fmt.Sprintf("loaded: %s, err: %v", req.fileName, err))
 	} else {
-		req.ch <- ChResp(fmt.Sprintf("loaded: %s, status: SUCCESS, duration %s", req.fineName, dur.String()))
+		req.ch <- ChResp(fmt.Sprintf("loaded: %s, status: SUCCESS, duration %s", req.fileName, dur.String()))
 	}
 }
 
@@ -46,6 +46,6 @@ func NewRequest(wg *sync.WaitGroup, ch chan<- ChResp, client *meilisearch.Client
 		wg:       wg,
 		ch:       ch,
 		client:   client,
-		fineName: fileName,
+		fileName: fileName,
 	}
 }
