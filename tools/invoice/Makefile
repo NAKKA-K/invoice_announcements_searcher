@@ -15,10 +15,11 @@ run: meilisearch.cid
 
 # See: https://hub.docker.com/r/getmeili/meilisearch/
 meilisearch.cid:
-	docker run --cidfile $(MEILISEARCH_CIDFILE) \
+	docker run --rm -itd -p 7700:7700 \
+		-v $(shell pwd)/meili_data:/meili_data \
 		--name $(MEILISEARCH_CONTAINER_NAME) \
-		--rm -itd -p 7700:7700 -v \
-		$(shell pwd)/meili_data:/meili_data getmeili/meilisearch:v0.30
+		--cidfile $(MEILISEARCH_CIDFILE) \
+		getmeili/meilisearch:v1.0
 
 stop:
 	-docker stop $(MEILISEARCH_CONTAINER_NAME)
