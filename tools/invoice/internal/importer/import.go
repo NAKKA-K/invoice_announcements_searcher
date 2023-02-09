@@ -27,7 +27,7 @@ func Run(req *Request) {
 		req.ch <- ChResp(err.Error())
 		return
 	}
-	documents, err := announcement.ToSliceMap(announcements)
+	documents, err := announcement.ToMaps(announcements)
 	if err != nil {
 		req.ch <- ChResp(err.Error())
 		return

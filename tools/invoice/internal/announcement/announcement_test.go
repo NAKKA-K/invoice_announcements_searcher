@@ -53,7 +53,7 @@ func TestAnnouncement_UnmarshalJSON(t *testing.T) {
 	assert.Equal(t, expected, actual)
 }
 
-func TestToSliceMap(t *testing.T) {
+func TestToMaps(t *testing.T) {
 	input := []Announcement{
 		{
 			RegistratedNumber: "T6011001033049",
@@ -67,7 +67,7 @@ func TestToSliceMap(t *testing.T) {
 		},
 	}
 
-	actual, err := ToSliceMap(input)
+	actual, err := ToMaps(input)
 	if err != nil {
 		t.Error(err)
 	}

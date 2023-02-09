@@ -43,7 +43,7 @@ func (d *Announcement) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func ToSliceMap(announcements []Announcement) ([]map[string]interface{}, error) {
+func ToMaps(announcements []Announcement) ([]map[string]interface{}, error) {
 	b, err := json.Marshal(announcements)
 	if err != nil {
 		return nil, fmt.Errorf("fail to marshal [announcements to bytes]: %w", err)
