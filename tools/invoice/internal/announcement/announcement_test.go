@@ -29,7 +29,7 @@ func TestAnnouncement_UnmarshalJSON(t *testing.T) {
     "addressRequestPrefectureCode" : "",
     "addressRequestCityCode" : "",
     "kana" : "",
-    "name" : "株式会社ＣＡＲＴＡ　ＨＯＬＤＩＮＧＳ",
+    "name" : "株式会社ＣＡＲＴＡ　ＨＯＬＤＩＮＧＳ, CARTA、ｶﾙﾀ 1！",
     "addressInside" : "",
     "addressInsidePrefectureCode" : "",
     "addressInsideCityCode" : "",
@@ -46,18 +46,11 @@ func TestAnnouncement_UnmarshalJSON(t *testing.T) {
 	expected := []Announcement{
 		{
 			RegistratedNumber: "T6011001033049",
-			OriginName:        "株式会社ＣＡＲＴＡ　ＨＯＬＤＩＮＧＳ",
-			NormalizedName:    "株式会社CARTA HOLDINGS",
+			OriginName:        "株式会社ＣＡＲＴＡ　ＨＯＬＤＩＮＧＳ, CARTA、ｶﾙﾀ 1！",
+			NormalizedName:    "株式会社CARTA HOLDINGS, CARTA、カルタ 1!",
 		},
 	}
 	assert.Equal(t, expected, actual)
-}
-
-func TestNormalize(t *testing.T) {
-	actual := Normalize("株式会社ＣＡＲＴＡ　ＨＯＬＤＩＮＧＳ, CARTA、ｶﾙﾀ 1！")
-	expected := "株式会社CARTA HOLDINGS, CARTA、カルタ 1!"
-
-	assert.Equal(t, expected, actual, "日本語は全角、英数字記号は半角になる")
 }
 
 func TestToSliceMap(t *testing.T) {
