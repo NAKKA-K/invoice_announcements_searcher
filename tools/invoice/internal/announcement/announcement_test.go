@@ -72,7 +72,7 @@ func TestToJSONMaps(t *testing.T) {
 		t.Error(err)
 	}
 
-	expected := []map[string]interface{}{
+	expected := []Document{
 		{
 			"registratedNumber": "T6011001033049",
 			"name":              "株式会社ＣＡＲＴＡ　ＨＯＬＤＩＮＧＳ",

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"invoice/internal/announcement"
 	"invoice/internal/duration"
 
 	"github.com/meilisearch/meilisearch-go"
@@ -13,7 +14,7 @@ import (
 const Timeout = time.Second * 120
 const Index = "invoice"
 
-func ToInvoice(client *meilisearch.Client, documents []map[string]interface{}) (*time.Duration, error) {
+func ToInvoice(client *meilisearch.Client, documents []announcement.Document) (*time.Duration, error) {
 	resp, err := client.Index(Index).AddDocuments(documents, "registratedNumber")
 	if err != nil {
 		return nil, fmt.Errorf("fail to start AddDocuments: %w", err)

@@ -14,6 +14,8 @@ type Announcement struct {
 	NormalizedName    string `json:"normalizedName"`
 }
 
+type Document map[string]any
+
 func LoadFromJson(name string) ([]Announcement, error) {
 	bytes, err := os.ReadFile(name)
 	if err != nil {
@@ -43,13 +45,13 @@ func (d *Announcement) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func ToJSONMaps(announcements []Announcement) ([]map[string]interface{}, error) {
+func ToJSONMaps(announcements []Announcement) ([]Document, error) {
 	b, err := json.Marshal(announcements)
 	if err != nil {
 		return nil, fmt.Errorf("fail to marshal [announcements to bytes]: %w", err)
 	}
 
-	var documents []map[string]interface{}
+	var documents []Document
 	err = json.Unmarshal(b, &documents)
 	if err != nil {
 		return nil, fmt.Errorf("fail to unmarshal [announcements bytes to slice map]: %w", err)
