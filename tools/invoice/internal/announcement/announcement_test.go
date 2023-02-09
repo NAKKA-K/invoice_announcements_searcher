@@ -53,7 +53,7 @@ func TestAnnouncement_UnmarshalJSON(t *testing.T) {
 	assert.Equal(t, expected, actual)
 }
 
-func TestToMaps(t *testing.T) {
+func TestToJSONMaps(t *testing.T) {
 	input := []Announcement{
 		{
 			RegistratedNumber: "T6011001033049",
@@ -67,7 +67,7 @@ func TestToMaps(t *testing.T) {
 		},
 	}
 
-	actual, err := ToMaps(input)
+	actual, err := ToJSONMaps(input)
 	if err != nil {
 		t.Error(err)
 	}
