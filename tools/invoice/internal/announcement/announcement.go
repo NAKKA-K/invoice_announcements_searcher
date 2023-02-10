@@ -5,13 +5,14 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/mitchellh/mapstructure"
 	"golang.org/x/text/width"
 )
 
 type Announcement struct {
-	RegistratedNumber string `json:"registratedNumber"`
-	OriginName        string `json:"name"`
-	NormalizedName    string `json:"normalizedName"`
+	RegistratedNumber string `json:"registratedNumber" mapstructure:"registratedNumber"`
+	OriginName        string `json:"name" mapstructure:"name"`
+	NormalizedName    string `json:"-" mapstructure:"normalizedName"`
 }
 
 type Document map[string]any
@@ -46,15 +47,14 @@ func (d *Announcement) UnmarshalJSON(b []byte) error {
 }
 
 func ToJSONMaps(announcements []Announcement) ([]Document, error) {
-	b, err := json.Marshal(announcements)
-	if err != nil {
-		return nil, fmt.Errorf("fail to marshal [announcements to bytes]: %w", err)
-	}
-
-	var documents []Document
-	err = json.Unmarshal(b, &documents)
-	if err != nil {
-		return nil, fmt.Errorf("fail to unmarshal [announcements bytes to slice map]: %w", err)
+	documents := make([]Document, 0, len(announcements))
+	for _, a := range announcements {
+		var doc Document
+		err := mapstructure.Decode(a, &doc)
+		if err != nil {
+			return nil, fmt.Errorf("fail to struct -> map: %w", err)
+		}
+		documents = append(documents, doc)
 	}
 
 	return documents, nil

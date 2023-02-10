@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/meilisearch/meilisearch-go v0.22.0
+	github.com/mitchellh/mapstructure v1.5.0
 	github.com/sosodev/duration v1.0.1
 	github.com/stretchr/testify v1.8.1
 	golang.org/x/text v0.6.0
