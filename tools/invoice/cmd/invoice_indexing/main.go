@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"sync"
 
@@ -25,20 +26,12 @@ func main() {
 	log.Println("start to load json")
 
 	var wg sync.WaitGroup
-	ch := make(chan importer.ChResp, len(files))
 	for _, file := range files {
 		wg.Add(1)
 
-		req := importer.NewRequest(&wg, ch, client, DataDir+"/"+file)
+		req := importer.NewRequest(&wg, context.Background(), client, DataDir+"/"+file)
 		go importer.Run(req)
 	}
-
-	for i := 0; i < len(files); i++ {
-		msg := <-ch
-		log.Println(string(msg))
-	}
-
-	close(ch)
 	wg.Wait()
 
 	log.Println("finish loading json")
